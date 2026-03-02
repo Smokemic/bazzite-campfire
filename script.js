@@ -21,10 +21,21 @@ const SAFE_COMMANDS = [
   'which steam', 'flatpak list', 'lutris'
 ];
 
-// Command-History für Fortschritt
-let commandHistory = [];
+// ==================== MISSION SYSTEM ====================
 let currentMission = 1;
 let completedMissions = [];
+let missionProgress = {
+  1: { name: 'First Steps', commands: ['ls', 'pwd', 'whoami'], completed: [] },
+  2: { name: 'Files & Folders', commands: ['ls -l', 'ls -a'], completed: [] },
+  3: { name: 'Exploring', commands: ['date', 'cal', 'echo'], completed: [] },
+  4: { name: 'Gaming on Linux', commands: ['which steam', 'flatpak list', 'lutris'], completed: [] }
+};
+
+// Command-History für Fortschritt
+let commandHistory = [];
+
+// Mission Chip Elements
+let missionChips = {};
 
 // Warte bis DOM geladen ist
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,11 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     term.writeln('\x1b[1;33m🔥 Welcome to Bazzite Campfire 3D!\x1b[0m');
     term.writeln('\x1b[1;32mType commands like ls, pwd, whoami, date\x1b[0m');
-    term.writeln('\x1b[1;33mMission 1: Try "ls" first!\x1b[0m');
+    term.writeln('\x1b[1;33m📌 Mission 1: Try "ls" first!\x1b[0m');
     term.write('\r\n\x1b[1;33m$\x1b[0m ');
-  } else {
-    console.error('Terminal element not found!');
   }
+  
+  // Mission Chips initialisieren
+  for (let i = 1; i <= 4; i++) {
+    missionChips[i] = document.getElementById(`mission${i}`);
+  }
+  
+  // Fortschritt aus localStorage laden
+  loadProgress();
+  updateMissionUI();
 });
 
 let currentLine = '';
@@ -163,71 +181,141 @@ function executeCommand(cmd) {
   else {
     term.writeln(`\x1b[1;31mCommand not recognized.\x1b[0m`);
   }
+  
+  // Fortschritt speichern
+  saveProgress();
 }
 
 function checkMissionProgress(cmd) {
-  // Mission 1: ls, pwd, whoami
-  if (currentMission === 1) {
-    if (cmd === 'ls' || cmd === 'pwd' || cmd === 'whoami') {
-      term.writeln(`\x1b[1;32m✅ Mission 1 step completed: ${cmd}\x1b[0m`);
+  // Prüfen ob der Befehl zur aktuellen Mission gehört
+  const mission = missionProgress[currentMission];
+  if (!mission || completedMissions.includes(currentMission)) return;
+  
+  if (mission.commands.includes(cmd) && !mission.completed.includes(cmd)) {
+    mission.completed.push(cmd);
+    term.writeln(`\x1b[1;32m✅ Mission ${currentMission} step completed: ${cmd}\x1b[0m`);
+    
+    // Prüfen ob Mission komplett
+    if (mission.completed.length === mission.commands.length) {
+      completedMissions.push(currentMission);
+      term.writeln(`\x1b[1;33m🎉 MISSION ${currentMission} COMPLETE! Great job!\x1b[0m`);
+      
+      // Nächste Mission
+      if (currentMission < 4) {
+        currentMission++;
+        term.writeln(`\x1b[1;33m📌 Next: Mission ${currentMission} – ${missionProgress[currentMission].name}\x1b[0m`);
+        
+        // Bazzi gratuliert
+        if (typeof addMessage === 'function') {
+          const congrats = [
+            '🎉 Super! Weiter so!',
+            '🔥 Mission geschafft! Weiter zur nächsten!',
+            '🌟 Du machst das großartig!',
+            '💪 Stark! Nächste Mission wartet!'
+          ];
+          addMessage('bazzi', congrats[Math.floor(Math.random() * congrats.length)]);
+        }
+      } else {
+        term.writeln(`\x1b[1;33m🎉🎉🎉 ALL MISSIONS COMPLETE! You're ready for Bazzite!\x1b[0m`);
+        if (typeof addMessage === 'function') {
+          addMessage('bazzi', '🔥 DU HAST ALLE MISSIONEN GESCHAFFT! Du bist bereit für echtes Bazzite!');
+        }
+      }
     }
-    if (commandHistory.includes('ls') && commandHistory.includes('pwd') && commandHistory.includes('whoami')) {
-      term.writeln(`\x1b[1;33m🎉 MISSION 1 COMPLETE! Great job!\x1b[0m`);
-      term.writeln(`\x1b[1;33m➡️ Next: Mission 2 – Files & Folders (try 'ls -l')\x1b[0m`);
-      currentMission = 2;
-      if (typeof addMessage === 'function') {
-        addMessage('bazzi', '🎉 Mission 1 geschafft! Weiter so! Jetzt kommen die Details mit `ls -l`.');
+    
+    updateMissionUI();
+  }
+}
+
+function updateMissionUI() {
+  // Mission Chips aktualisieren
+  for (let i = 1; i <= 4; i++) {
+    const chip = missionChips[i];
+    if (chip) {
+      if (completedMissions.includes(i)) {
+        chip.classList.add('completed');
+        chip.classList.remove('active');
+      } else if (i === currentMission && !completedMissions.includes(i)) {
+        chip.classList.add('active');
+        chip.classList.remove('completed');
+      } else {
+        chip.classList.remove('active', 'completed');
       }
     }
   }
-  // Mission 2: ls -l, ls -a
-  else if (currentMission === 2) {
-    if (cmd === 'ls -l' || cmd === 'ls -a') {
-      term.writeln(`\x1b[1;32m✅ Mission 2 step completed: ${cmd}\x1b[0m`);
-    }
-    if (commandHistory.includes('ls -l') && commandHistory.includes('ls -a')) {
-      term.writeln(`\x1b[1;33m🎉 MISSION 2 COMPLETE! You're on fire!\x1b[0m`);
-      term.writeln(`\x1b[1;33m➡️ Next: Mission 3 – Exploring (try 'date' or 'cal')\x1b[0m`);
-      currentMission = 3;
-      if (typeof addMessage === 'function') {
-        addMessage('bazzi', '🎉 Mission 2 geschafft! Jetzt wird erkundet!');
-      }
-    }
+  
+  // Progress Bar
+  const totalSteps = 12; // 4 Missionen * 3 Befehle
+  let completedSteps = 0;
+  for (let i = 1; i <= 4; i++) {
+    completedSteps += missionProgress[i]?.completed.length || 0;
   }
-  // Mission 3: date, cal, echo
-  else if (currentMission === 3) {
-    if (cmd === 'date' || cmd === 'cal' || cmd === 'echo') {
-      term.writeln(`\x1b[1;32m✅ Mission 3 step completed: ${cmd}\x1b[0m`);
-    }
-    if (commandHistory.includes('date') && commandHistory.includes('cal') && commandHistory.includes('echo')) {
-      term.writeln(`\x1b[1;33m🎉 MISSION 3 COMPLETE! Almost there!\x1b[0m`);
-      term.writeln(`\x1b[1;33m➡️ Final Mission: Gaming on Linux (try 'which steam')\x1b[0m`);
-      currentMission = 4;
-      if (typeof addMessage === 'function') {
-        addMessage('bazzi', '🎉 Mission 3 geschafft! Jetzt wird's gaming!');
-      }
-    }
-  }
-  // Mission 4: which steam, flatpak list, lutris
-  else if (currentMission === 4) {
-    if (cmd === 'which steam' || cmd === 'flatpak list' || cmd === 'lutris') {
-      term.writeln(`\x1b[1;32m✅ Mission 4 step completed: ${cmd}\x1b[0m`);
-    }
-    if (commandHistory.includes('which steam') && commandHistory.includes('flatpak list') && commandHistory.includes('lutris')) {
-      term.writeln(`\x1b[1;33m🎉🎉🎉 ALL MISSIONS COMPLETE! You're ready for Bazzite!\x1b[0m`);
-      if (typeof addMessage === 'function') {
-        addMessage('bazzi', '🔥 DU HAST ALLE MISSIONEN GESCHAFFT! Du bist bereit für echtes Bazzite!');
-      }
-    }
-  }
+  const percent = Math.round((completedSteps / totalSteps) * 100);
+  
+  const progressFill = document.getElementById('progressFill');
+  const progressPercent = document.getElementById('progressPercent');
+  if (progressFill) progressFill.style.width = percent + '%';
+  if (progressPercent) progressPercent.textContent = percent + '%';
 }
 
 function bazziTip(cmd, tip) {
   if (typeof addMessage === 'function') {
-    // Nur manchmal Tipps geben (nicht bei jedem Befehl)
-    if (Math.random() > 0.7) {
+    // Bei ersten Malen Tipp geben
+    const cmdCount = commandHistory.filter(c => c === cmd).length;
+    if (cmdCount === 1) {
       addMessage('bazzi', tip);
     }
+  }
+}
+
+// ==================== SPEICHERFUNKTIONEN ====================
+
+function saveProgress() {
+  const progress = {
+    currentMission,
+    completedMissions,
+    missionProgress,
+    commandHistory
+  };
+  localStorage.setItem('campfireProgress', JSON.stringify(progress));
+}
+
+function loadProgress() {
+  const saved = localStorage.getItem('campfireProgress');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      currentMission = data.currentMission || 1;
+      completedMissions = data.completedMissions || [];
+      missionProgress = data.missionProgress || missionProgress;
+      commandHistory = data.commandHistory || [];
+      updateMissionUI();
+    } catch (e) {
+      console.log('No saved progress');
+    }
+  }
+}
+
+function resetProgress() {
+  currentMission = 1;
+  completedMissions = [];
+  missionProgress = {
+    1: { name: 'First Steps', commands: ['ls', 'pwd', 'whoami'], completed: [] },
+    2: { name: 'Files & Folders', commands: ['ls -l', 'ls -a'], completed: [] },
+    3: { name: 'Exploring', commands: ['date', 'cal', 'echo'], completed: [] },
+    4: { name: 'Gaming on Linux', commands: ['which steam', 'flatpak list', 'lutris'], completed: [] }
+  };
+  commandHistory = [];
+  localStorage.removeItem('campfireProgress');
+  updateMissionUI();
+  
+  term.clear();
+  term.writeln('\x1b[1;33m🔥 Progress reset! Starting fresh.\x1b[0m');
+  term.writeln('\x1b[1;33m📌 Mission 1: Try "ls" first!\x1b[0m');
+  term.write('\x1b[1;33m$\x1b[0m ');
+  
+  if (typeof addMessage === 'function') {
+    addMessage('bazzi', '🔄 Alles zurückgesetzt! Frischer Start – viel Erfolg!');
   }
 }
 
@@ -245,7 +333,7 @@ function sendChatMessage() {
     const answer = getBazziResponse(question);
     setTimeout(() => addMessage('bazzi', answer), 500);
   } else {
-    setTimeout(() => addMessage('bazzi', "Ich bin hier! Aber meine Persönlichkeit lädt noch..."), 500);
+    setTimeout(() => addMessage('bazzi', "Ich bin hier! Frag mich zu Spotify, Discord (Fluxer!), Gaming oder Linux-Befehlen!"), 500);
   }
   
   input.value = '';
@@ -253,6 +341,8 @@ function sendChatMessage() {
 
 function addMessage(sender, text) {
   const chat = document.getElementById('chatMessages');
+  if (!chat) return;
+  
   const messageDiv = document.createElement('div');
   messageDiv.className = `message message-${sender}`;
   
@@ -358,14 +448,7 @@ window.playNextVideo = function() {
 document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('resetSession')?.addEventListener('click', () => {
-    term.clear();
-    term.writeln('\x1b[1;33m🔥 Fresh start! Ready to learn?\x1b[0m');
-    term.writeln('\x1b[1;33mMission 1: Try "ls" first!\x1b[0m');
-    term.write('\x1b[1;33m$\x1b[0m ');
-    currentLine = '';
-    commandHistory = [];
-    currentMission = 1;
-    addMessage('bazzi', "Fresh campfire! What would you like to learn today?");
+    resetProgress();
   });
 
   document.getElementById('showCommands')?.addEventListener('click', () => {
@@ -388,25 +471,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('emergencyReset')?.addEventListener('click', () => {
-    term.clear();
-    term.writeln('\x1b[1;31m🚨 Emergency reset\x1b[0m');
-    term.writeln('\x1b[1;33m🔥 Welcome back to Bazzite Campfire\x1b[0m');
-    term.writeln('\x1b[1;33mMission 1: Try "ls" first!\x1b[0m');
-    term.write('\x1b[1;33m$\x1b[0m ');
-    currentLine = '';
-    commandHistory = [];
-    currentMission = 1;
-    
-    const chatMessages = document.getElementById('chatMessages');
-    if (chatMessages) {
-      chatMessages.innerHTML = `
-        <div class="message message-bazzi">
-          <div class="message-content">
-            Hey there! I'm Bazzi. Everything's reset. How can I help?
-          </div>
-        </div>
-      `;
+    resetProgress();
+  });
+  
+  // Mission Chip Klicks
+  document.getElementById('mission1')?.addEventListener('click', () => {
+    if (!completedMissions.includes(1)) {
+      currentMission = 1;
+      updateMissionUI();
+      term.writeln('\x1b[1;33m📌 Mission 1: Try "ls", "pwd", and "whoami"\x1b[0m');
+      term.write('\x1b[1;33m$\x1b[0m ');
     }
   });
   
+  document.getElementById('mission2')?.addEventListener('click', () => {
+    if (completedMissions.includes(1) && !completedMissions.includes(2)) {
+      currentMission = 2;
+      updateMissionUI();
+      term.writeln('\x1b[1;33m📌 Mission 2: Try "ls -l" and "ls -a"\x1b[0m');
+      term.write('\x1b[1;33m$\x1b[0m ');
+    } else if (!completedMissions.includes(1)) {
+      addMessage('bazzi', 'Du musst erst Mission 1 abschließen!');
+    }
+  });
+  
+  document.getElementById('mission3')?.addEventListener('click', () => {
+    if (completedMissions.includes(2) && !completedMissions.includes(3)) {
+      currentMission = 3;
+      updateMissionUI();
+      term.writeln('\x1b[1;33m📌 Mission 3: Try "date", "cal", and "echo"\x1b[0m');
+      term.write('\x1b[1;33m$\x1b[0m ');
+    } else if (!completedMissions.includes(2)) {
+      addMessage('bazzi', 'Erst Mission 2 schaffen!');
+    }
+  });
+  
+  document.getElementById('mission4')?.addEventListener('click', () => {
+    if (completedMissions.includes(3) && !completedMissions.includes(4)) {
+      currentMission = 4;
+      updateMissionUI();
+      term.writeln('\x1b[1;33m📌 Mission 4: Try "which steam", "flatpak list", "lutris"\x1b[0m');
+      term.write('\x1b[1;33m$\x1b[0m ');
+    } else if (!completedMissions.includes(3)) {
+      addMessage('bazzi', 'Fast geschafft! Aber erst Mission 3.');
+    }
+  });
 });
