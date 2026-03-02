@@ -385,3 +385,75 @@ h1 {
   .bazzi-header { flex-direction: column; text-align: center; }
   .chat-input-area { flex-direction: column; }
 }
+.bazzite-demo-section {
+  background: rgba(20, 30, 25, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 24px;
+  margin: 30px 0;
+  border: 2px solid #FF9341;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.section-header h3 {
+  color: #FFD8A8;
+  font-size: 24px;
+  margin: 0;
+}
+
+.demo-badge {
+  background: #FF9341;
+  color: #0B1E10;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.desktop-icon {
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 147, 65, 0.2);
+}
+
+.desktop-icon:hover {
+  background: rgba(255, 147, 65, 0.2);
+  transform: scale(1.05);
+  border-color: #FF9341;
+}
+
+.desktop-icon .icon {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+
+.desktop-icon div:last-child {
+  color: #CBBDA8;
+  font-size: 14px;
+}
+
+.demo-footer {
+  text-align: center;
+  color: #CBBDA8;
+  font-size: 14px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 147, 65, 0.3);
+}
