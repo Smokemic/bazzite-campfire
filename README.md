@@ -1,3 +1,7 @@
+
+# 🚫 IN CONSTRUCTION 🚫
+
+
 # 🔥 Bazzite Campfire
 
 > Your friendly campfire for learning Linux and switching from Windows to Bazzite.
