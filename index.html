@@ -95,7 +95,6 @@
         <div class="terminal-dot yellow"></div>
         <div class="terminal-dot green"></div>
       </div>
-      <!-- >>> HIER IST DAS TERMINAL ELEMENT <<< -->
       <div id="terminal"></div>
     </div>
 
@@ -107,39 +106,60 @@
       <button class="campfire-button danger" id="emergencyReset">🚨 Reset All</button>
     </div>
 
-    <!-- Campfire Cinema -->
+    <!-- Campfire Cinema (EINMAL) -->
     <div class="cinema-section">
       <div class="cinema-header">
         <span style="font-size: 32px;">🎬</span>
         <span class="cinema-title">Campfire Cinema</span>
-        <span class="cinema-badge">Watch & Learn</span>
+        <span style="background: #FF9341; color: #0B1E10; padding: 4px 12px; border-radius: 20px; font-size: 14px;">Watch & Learn</span>
       </div>
       
       <div class="cinema-grid">
         <!-- Mission 1 Videos -->
         <div class="cinema-category">
-          <div class="category-title">
-            <span>🏕️</span> Mission 1: First Steps
-          </div>
+          <div class="category-title"><span>🏕️</span> Mission 1: First Steps</div>
           <div class="video-item" onclick="playVideo('d6rMOZwB9QI', 'ls – List files')">
-            <span>▶️</span>
-            <span>ls – List files</span>
-            <span style="color: #CBBDA8;">2:34</span>
+            <span>▶️</span> <span>ls – List files</span> <span style="color: #CBBDA8;">2:34</span>
           </div>
           <div class="video-item" onclick="playVideo('fVnR5RQMNkM', 'pwd – Where am I?')">
-            <span>▶️</span>
-            <span>pwd – Where am I?</span>
-            <span style="color: #CBBDA8;">1:45</span>
+            <span>▶️</span> <span>pwd – Where am I?</span> <span style="color: #CBBDA8;">1:45</span>
           </div>
           <div class="video-item" onclick="playVideo('j6vKLJxAKfw', 'whoami – Who are you?')">
-            <span>▶️</span>
-            <span>whoami – Who are you?</span>
-            <span style="color: #CBBDA8;">1:23</span>
+            <span>▶️</span> <span>whoami – Who are you?</span> <span style="color: #CBBDA8;">1:23</span>
+          </div>
+        </div>
+        
+        <!-- Mission 2 Videos -->
+        <div class="cinema-category">
+          <div class="category-title"><span>📁</span> Mission 2: Files & Folders</div>
+          <div class="video-item" onclick="playVideo('4jvzHc2zRqI', 'ls -l – Details view')">
+            <span>▶️</span> <span>ls -l – Details view</span> <span style="color: #CBBDA8;">3:01</span>
+          </div>
+          <div class="video-item" onclick="playVideo('vQBe47p2AzQ', 'ls -a – Hidden files')">
+            <span>▶️</span> <span>ls -a – Hidden files</span> <span style="color: #CBBDA8;">2:12</span>
+          </div>
+          <div class="video-item" onclick="playVideo('cBkKfdxEw6o', 'cd – Navigation')">
+            <span>▶️</span> <span>cd – Navigation</span> <span style="color: #CBBDA8;">4:45</span>
+          </div>
+        </div>
+        
+        <!-- Gaming & Bazzite Videos -->
+        <div class="cinema-category">
+          <div class="category-title"><span>🎮</span> Gaming & Bazzite</div>
+          <div class="video-item" onclick="playVideo('ROjZy1TRmzM', 'Linux for beginners')">
+            <span>▶️</span> <span>Linux for beginners</span> <span style="color: #CBBDA8;">12:34</span>
+          </div>
+          <div class="video-item" onclick="playVideo('VGgTmxXp7xQ', 'grep – Search like a pro')">
+            <span>▶️</span> <span>grep – Search like a pro</span> <span style="color: #CBBDA8;">4:20</span>
+          </div>
+          <div class="video-item" onclick="playVideo('OVLuT1nWf5g', 'Bazzite overview')">
+            <span>▶️</span> <span>Bazzite overview</span> <span style="color: #CBBDA8;">8:15</span>
           </div>
         </div>
       </div>
       
-      <div class="cinema-buttons">
+      <!-- Playlist Buttons (EINMAL) -->
+      <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
         <button class="campfire-button" onclick="playPlaylist('mission1')">▶️ Mission 1 Playlist</button>
         <button class="campfire-button" onclick="playPlaylist('mission2')">▶️ Mission 2 Playlist</button>
         <button class="campfire-button" onclick="playPlaylist('gaming')">🎮 Gaming Playlist</button>
