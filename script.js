@@ -13,11 +13,19 @@ const term = new Terminal({
   scrollback: 500
 });
 
-term.open(document.getElementById('terminal'));
-
-term.writeln('\x1b[1;33m🔥 Welcome to Bazzite Campfire 3D!\x1b[0m');
-term.writeln('\x1b[1;32mType commands like ls, pwd, whoami, date\x1b[0m');
-term.write('\r\n\x1b[1;33m$\x1b[0m ');
+// Warte bis DOM geladen ist
+document.addEventListener('DOMContentLoaded', () => {
+  const terminalElement = document.getElementById('terminal');
+  if (terminalElement) {
+    term.open(terminalElement);
+    
+    term.writeln('\x1b[1;33m🔥 Welcome to Bazzite Campfire 3D!\x1b[0m');
+    term.writeln('\x1b[1;32mType commands like ls, pwd, whoami, date\x1b[0m');
+    term.write('\r\n\x1b[1;33m$\x1b[0m ');
+  } else {
+    console.error('Terminal element not found!');
+  }
+});
 
 let currentLine = '';
 
@@ -45,7 +53,8 @@ term.onKey((e) => {
     } else if (cmd === 'date') {
       term.writeln(new Date().toString());
     } else if (cmd === 'cal') {
-      term.writeln('   March 2026');
+      const now = new Date();
+      term.writeln(`   ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`);
       term.writeln('Su Mo Tu We Th Fr Sa');
       term.writeln(' 1  2  3  4  5  6  7');
       term.writeln(' 8  9 10 11 12 13 14');
@@ -110,7 +119,8 @@ function quickQuestion(question) {
 // ==================== MODAL FUNKTIONEN ====================
 
 function showModal(type) {
-  document.getElementById(`modal${type.charAt(0).toUpperCase() + type.slice(1)}`).classList.add('active');
+  const modal = document.getElementById(`modal${type.charAt(0).toUpperCase() + type.slice(1)}`);
+  if (modal) modal.classList.add('active');
 }
 
 function closeModal() {
@@ -123,13 +133,17 @@ let currentPlaylist = [];
 let currentVideoIndex = 0;
 
 function playVideo(videoId, title) {
-  document.getElementById('youtubePlayer').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
-  document.getElementById('videoModal').classList.add('active');
-  addMessage('bazzi', `🎬 Now playing: ${title}. Watch and learn!`);
+  const player = document.getElementById('youtubePlayer');
+  if (player) {
+    player.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+    document.getElementById('videoModal').classList.add('active');
+    addMessage('bazzi', `🎬 Now playing: ${title}. Watch and learn!`);
+  }
 }
 
 function closeVideoModal() {
-  document.getElementById('youtubePlayer').src = '';
+  const player = document.getElementById('youtubePlayer');
+  if (player) player.src = '';
   document.getElementById('videoModal').classList.remove('active');
 }
 
@@ -184,44 +198,52 @@ function playNextVideo() {
 
 // ==================== BUTTON HANDLER ====================
 
-document.getElementById('resetSession').addEventListener('click', () => {
-  term.clear();
-  term.writeln('\x1b[1;33m🔥 Fresh start! Ready to learn?\x1b[0m');
-  term.write('\x1b[1;33m$\x1b[0m ');
-  currentLine = '';
-  addMessage('bazzi', "Fresh campfire! What would you like to learn today?");
-});
-
-document.getElementById('showCommands').addEventListener('click', () => {
-  term.writeln('\r\n\x1b[1;33m🔥 Available commands:\x1b[0m');
-  term.writeln('ls, pwd, whoami, date, cal, clear');
-  term.write('\x1b[1;33m$\x1b[0m ');
-});
-
-document.getElementById('bazziteFacts').addEventListener('click', () => {
-  const facts = [
-    "🔥 Bazzite is immutable – you can't break it!",
-    "🎮 Your 9070XT is perfectly supported on Bazzite",
-    "⏰ No more forced Windows updates!",
-    "💚 Open source and community driven",
-    "🚀 Games often run faster than on Windows"
-  ];
-  const fact = facts[Math.floor(Math.random() * facts.length)];
-  addMessage('bazzi', fact);
-});
-
-document.getElementById('emergencyReset').addEventListener('click', () => {
-  term.clear();
-  term.writeln('\x1b[1;31m🚨 Emergency reset\x1b[0m');
-  term.writeln('\x1b[1;33m🔥 Welcome back to Bazzite Campfire\x1b[0m');
-  term.write('\x1b[1;33m$\x1b[0m ');
-  currentLine = '';
+// Warte bis DOM geladen ist für Button-Handler
+document.addEventListener('DOMContentLoaded', () => {
   
-  document.getElementById('chatMessages').innerHTML = `
-    <div class="message message-bazzi">
-      <div class="message-content">
-        Hey there! I'm Bazzi. Everything's reset. How can I help?
-      </div>
-    </div>
-  `;
+  document.getElementById('resetSession')?.addEventListener('click', () => {
+    term.clear();
+    term.writeln('\x1b[1;33m🔥 Fresh start! Ready to learn?\x1b[0m');
+    term.write('\x1b[1;33m$\x1b[0m ');
+    currentLine = '';
+    addMessage('bazzi', "Fresh campfire! What would you like to learn today?");
+  });
+
+  document.getElementById('showCommands')?.addEventListener('click', () => {
+    term.writeln('\r\n\x1b[1;33m🔥 Available commands:\x1b[0m');
+    term.writeln('ls, pwd, whoami, date, cal, clear');
+    term.write('\x1b[1;33m$\x1b[0m ');
+  });
+
+  document.getElementById('bazziteFacts')?.addEventListener('click', () => {
+    const facts = [
+      "🔥 Bazzite is immutable – you can't break it!",
+      "🎮 Bazzite is perfect for gaming on AMD hardware",
+      "⏰ No more forced Windows updates!",
+      "💚 Open source and community driven",
+      "🚀 Games often run faster than on Windows"
+    ];
+    const fact = facts[Math.floor(Math.random() * facts.length)];
+    addMessage('bazzi', fact);
+  });
+
+  document.getElementById('emergencyReset')?.addEventListener('click', () => {
+    term.clear();
+    term.writeln('\x1b[1;31m🚨 Emergency reset\x1b[0m');
+    term.writeln('\x1b[1;33m🔥 Welcome back to Bazzite Campfire\x1b[0m');
+    term.write('\x1b[1;33m$\x1b[0m ');
+    currentLine = '';
+    
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+      chatMessages.innerHTML = `
+        <div class="message message-bazzi">
+          <div class="message-content">
+            Hey there! I'm Bazzi. Everything's reset. How can I help?
+          </div>
+        </div>
+      `;
+    }
+  });
+  
 });
