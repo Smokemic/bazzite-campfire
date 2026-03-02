@@ -249,6 +249,71 @@ h1 {
   color: #9FE59F;
 }
 
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #CBBDA8;
+  margin-bottom: 5px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: rgba(26, 42, 26, 0.7);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF9341, #FFD8A8);
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.backpack {
+  background: rgba(26, 42, 26, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 20px;
+  padding: 16px;
+  margin: 20px 0;
+  border: 1px solid #3A5A3A;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.backpack-icon {
+  font-size: 32px;
+}
+
+.backpack-items {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.backpack-item {
+  background: #2A3A2A;
+  border: 1px solid #FF9341;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 14px;
+  color: #FFD8A8;
+  cursor: pointer;
+}
+
+.backpack-item:hover {
+  background: #3A4A3A;
+  transform: scale(1.05);
+}
+
 /* Desktop Simulation */
 .desktop-simulation {
   background: rgba(25, 35, 30, 0.9);
@@ -348,6 +413,7 @@ h1 {
   border-top: 1px solid #3A5A3A;
 }
 
+/* Terminal Container */
 .terminal-container {
   background: rgba(10, 26, 14, 0.8);
   border-radius: 24px;
@@ -374,15 +440,14 @@ h1 {
 .terminal-dot.green { background: #27C93F; }
 
 #terminal {
-  height: 300px;  /* Feste Höhe */
+  height: 300px;
   width: 100%;
   background: transparent;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
-  overflow-y: auto;  /* WICHTIG: Scrollbar aktivieren */
 }
 
-/* Optional: Scrollbar stylen */
+/* Scrollbar Styles */
 #terminal .xterm-viewport {
   overflow-y: auto !important;
   scrollbar-width: thin;
@@ -395,11 +460,16 @@ h1 {
 
 #terminal .xterm-viewport::-webkit-scrollbar-track {
   background: #2A3A2A;
+  border-radius: 4px;
 }
 
 #terminal .xterm-viewport::-webkit-scrollbar-thumb {
   background: #FF9341;
   border-radius: 4px;
+}
+
+#terminal .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: #FFB47B;
 }
 
 .control-bar {
