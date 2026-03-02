@@ -10,7 +10,7 @@ const term = new Terminal({
   fontFamily: 'Menlo, Monaco, "Courier New", monospace',
   fontSize: 14,
   cursorBlink: true,
-  scrollback: 500
+  scrollback: 5000  // Von 500 auf 5000 erhöht!
 });
 
 // Whitelist der erlaubten Befehle
