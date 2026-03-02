@@ -27,7 +27,7 @@ Everything runs in your browser. Nothing touches your real system. No credit car
 | 🏕️ **4 Learning Missions** | First Steps · Files & Folders · Exploring · Gaming |
 | 🔥 **3D Campfire** | Animated fire, sparks, and low-poly Bazzi robot |
 | 🌍 **Multi-language ready** | English, German, Turkish, Spanish, French |
-| 🚫 **No BS** | No credit card, no login, no tracking, open source |
+| 🚫 **No BS** | No login, no tracking, open source |
 
 ---
 
