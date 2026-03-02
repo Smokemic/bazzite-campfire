@@ -10,7 +10,7 @@ const term = new Terminal({
   fontFamily: 'Menlo, Monaco, "Courier New", monospace',
   fontSize: 14,
   cursorBlink: true,
-  scrollback: 5000  // Von 500 auf 5000 erhöht!
+  scrollback: 5000
 });
 
 // Whitelist der erlaubten Befehle
@@ -31,13 +31,9 @@ let missionProgress = {
   4: { name: 'Gaming on Linux', commands: ['which steam', 'flatpak list', 'lutris'], completed: [] }
 };
 
-// Command-History für Fortschritt
 let commandHistory = [];
-
-// Mission Chip Elements
 let missionChips = {};
 
-// Warte bis DOM geladen ist
 document.addEventListener('DOMContentLoaded', () => {
   const terminalElement = document.getElementById('terminal');
   if (terminalElement) {
@@ -49,12 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
     term.write('\r\n\x1b[1;33m$\x1b[0m ');
   }
   
-  // Mission Chips initialisieren
   for (let i = 1; i <= 4; i++) {
     missionChips[i] = document.getElementById(`mission${i}`);
   }
   
-  // Fortschritt aus localStorage laden
   loadProgress();
   updateMissionUI();
 });
@@ -65,7 +59,7 @@ term.onKey((e) => {
   const char = e.key;
   const code = e.domEvent.keyCode;
   
-  if (code === 13) { // Enter
+  if (code === 13) {
     term.write('\r\n');
     
     if (currentLine.trim() === '') {
@@ -74,14 +68,12 @@ term.onKey((e) => {
     }
     
     const cmd = currentLine.trim().toLowerCase();
-    
-    // Befehl ausführen
     executeCommand(cmd);
     
     currentLine = '';
     term.write('\x1b[1;33m$\x1b[0m ');
     
-  } else if (code === 8) { // Backspace
+  } else if (code === 8) {
     if (currentLine.length > 0) {
       currentLine = currentLine.slice(0, -1);
       term.write('\b \b');
@@ -93,17 +85,14 @@ term.onKey((e) => {
 });
 
 function executeCommand(cmd) {
-  // Command speichern
   commandHistory.push(cmd);
   
-  // Prüfen ob Befehl erlaubt ist
   if (!SAFE_COMMANDS.includes(cmd) && !cmd.startsWith('echo ')) {
     term.writeln(`\x1b[1;31m⛔ Command not available in demo mode.\x1b[0m`);
     term.writeln(`\x1b[1;33mTry: ls, pwd, whoami, date, cal, clear, echo "hello"\x1b[0m`);
     return;
   }
   
-  // Befehle ausführen
   if (cmd === 'ls') {
     term.writeln('Documents/  Pictures/  Music/  Videos/  README.txt  campfire/');
     checkMissionProgress('ls');
@@ -182,12 +171,10 @@ function executeCommand(cmd) {
     term.writeln(`\x1b[1;31mCommand not recognized.\x1b[0m`);
   }
   
-  // Fortschritt speichern
   saveProgress();
 }
 
 function checkMissionProgress(cmd) {
-  // Prüfen ob der Befehl zur aktuellen Mission gehört
   const mission = missionProgress[currentMission];
   if (!mission || completedMissions.includes(currentMission)) return;
   
@@ -195,17 +182,14 @@ function checkMissionProgress(cmd) {
     mission.completed.push(cmd);
     term.writeln(`\x1b[1;32m✅ Mission ${currentMission} step completed: ${cmd}\x1b[0m`);
     
-    // Prüfen ob Mission komplett
     if (mission.completed.length === mission.commands.length) {
       completedMissions.push(currentMission);
       term.writeln(`\x1b[1;33m🎉 MISSION ${currentMission} COMPLETE! Great job!\x1b[0m`);
       
-      // Nächste Mission
       if (currentMission < 4) {
         currentMission++;
         term.writeln(`\x1b[1;33m📌 Next: Mission ${currentMission} – ${missionProgress[currentMission].name}\x1b[0m`);
         
-        // Bazzi gratuliert
         if (typeof addMessage === 'function') {
           const congrats = [
             '🎉 Super! Weiter so!',
@@ -228,7 +212,6 @@ function checkMissionProgress(cmd) {
 }
 
 function updateMissionUI() {
-  // Mission Chips aktualisieren
   for (let i = 1; i <= 4; i++) {
     const chip = missionChips[i];
     if (chip) {
@@ -244,8 +227,7 @@ function updateMissionUI() {
     }
   }
   
-  // Progress Bar
-  const totalSteps = 12; // 4 Missionen * 3 Befehle
+  const totalSteps = 12;
   let completedSteps = 0;
   for (let i = 1; i <= 4; i++) {
     completedSteps += missionProgress[i]?.completed.length || 0;
@@ -260,15 +242,12 @@ function updateMissionUI() {
 
 function bazziTip(cmd, tip) {
   if (typeof addMessage === 'function') {
-    // Bei ersten Malen Tipp geben
     const cmdCount = commandHistory.filter(c => c === cmd).length;
     if (cmdCount === 1) {
       addMessage('bazzi', tip);
     }
   }
 }
-
-// ==================== SPEICHERFUNKTIONEN ====================
 
 function saveProgress() {
   const progress = {
@@ -319,8 +298,6 @@ function resetProgress() {
   }
 }
 
-// ==================== CHAT FUNKTIONEN ====================
-
 function sendChatMessage() {
   const input = document.getElementById('chatInput');
   const question = input.value.trim();
@@ -328,7 +305,6 @@ function sendChatMessage() {
   
   addMessage('user', question);
   
-  // Bazzi antwortet (aus bazzi-personality.js)
   if (typeof getBazziResponse === 'function') {
     const answer = getBazziResponse(question);
     setTimeout(() => addMessage('bazzi', answer), 500);
@@ -360,8 +336,6 @@ function quickQuestion(question) {
   sendChatMessage();
 }
 
-// ==================== MODAL FUNKTIONEN ====================
-
 window.showModal = function(type) {
   const modal = document.getElementById(`modal${type.charAt(0).toUpperCase() + type.slice(1)}`);
   if (modal) modal.classList.add('active');
@@ -370,8 +344,6 @@ window.showModal = function(type) {
 window.closeModal = function() {
   document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
 };
-
-// ==================== VIDEO FUNKTIONEN ====================
 
 let currentPlaylist = [];
 let currentVideoIndex = 0;
@@ -417,103 +389,4 @@ window.playPlaylist = function(type) {
       'VGgTmxXp7xQ': 'grep – Search like a pro',
       'OVLuT1nWf5g': 'Bazzite overview'
     };
-    window.playVideo(videoId, titles[videoId]);
-  }
-};
-
-window.playNextVideo = function() {
-  if (currentPlaylist.length > 0 && currentVideoIndex < currentPlaylist.length - 1) {
-    currentVideoIndex++;
-    const videoId = currentPlaylist[currentVideoIndex];
-    const titles = {
-      'd6rMOZwB9QI': 'ls – List files',
-      'fVnR5RQMNkM': 'pwd – Where am I?',
-      'j6vKLJxAKfw': 'whoami – Who are you?',
-      '4jvzHc2zRqI': 'ls -l – Details view',
-      'vQBe47p2AzQ': 'ls -a – Hidden files',
-      'cBkKfdxEw6o': 'cd – Navigation',
-      'ROjZy1TRmzM': 'Linux for beginners',
-      'VGgTmxXp7xQ': 'grep – Search like a pro',
-      'OVLuT1nWf5g': 'Bazzite overview'
-    };
-    window.playVideo(videoId, titles[videoId]);
-  } else {
-    addMessage('bazzi', "That's the end of the playlist! Want to watch again?");
-    window.closeVideoModal();
-  }
-};
-
-// ==================== BUTTON HANDLER ====================
-
-document.addEventListener('DOMContentLoaded', () => {
-  
-  document.getElementById('resetSession')?.addEventListener('click', () => {
-    resetProgress();
-  });
-
-  document.getElementById('showCommands')?.addEventListener('click', () => {
-    term.writeln('\r\n\x1b[1;33m🔥 Available commands:\x1b[0m');
-    term.writeln('ls, ls -l, ls -a, pwd, whoami, date, cal, clear');
-    term.writeln('echo "text", which steam, flatpak list, lutris');
-    term.write('\x1b[1;33m$\x1b[0m ');
-  });
-
-  document.getElementById('bazziteFacts')?.addEventListener('click', () => {
-    const facts = [
-      "🔥 Bazzite is immutable – you can't break it!",
-      "🎮 Bazzite is perfect for gaming on AMD hardware",
-      "⏰ No more forced Windows updates!",
-      "💚 Open source and community driven",
-      "🚀 Games often run faster than on Windows"
-    ];
-    const fact = facts[Math.floor(Math.random() * facts.length)];
-    addMessage('bazzi', fact);
-  });
-
-  document.getElementById('emergencyReset')?.addEventListener('click', () => {
-    resetProgress();
-  });
-  
-  // Mission Chip Klicks
-  document.getElementById('mission1')?.addEventListener('click', () => {
-    if (!completedMissions.includes(1)) {
-      currentMission = 1;
-      updateMissionUI();
-      term.writeln('\x1b[1;33m📌 Mission 1: Try "ls", "pwd", and "whoami"\x1b[0m');
-      term.write('\x1b[1;33m$\x1b[0m ');
-    }
-  });
-  
-  document.getElementById('mission2')?.addEventListener('click', () => {
-    if (completedMissions.includes(1) && !completedMissions.includes(2)) {
-      currentMission = 2;
-      updateMissionUI();
-      term.writeln('\x1b[1;33m📌 Mission 2: Try "ls -l" and "ls -a"\x1b[0m');
-      term.write('\x1b[1;33m$\x1b[0m ');
-    } else if (!completedMissions.includes(1)) {
-      addMessage('bazzi', 'Du musst erst Mission 1 abschließen!');
-    }
-  });
-  
-  document.getElementById('mission3')?.addEventListener('click', () => {
-    if (completedMissions.includes(2) && !completedMissions.includes(3)) {
-      currentMission = 3;
-      updateMissionUI();
-      term.writeln('\x1b[1;33m📌 Mission 3: Try "date", "cal", and "echo"\x1b[0m');
-      term.write('\x1b[1;33m$\x1b[0m ');
-    } else if (!completedMissions.includes(2)) {
-      addMessage('bazzi', 'Erst Mission 2 schaffen!');
-    }
-  });
-  
-  document.getElementById('mission4')?.addEventListener('click', () => {
-    if (completedMissions.includes(3) && !completedMissions.includes(4)) {
-      currentMission = 4;
-      updateMissionUI();
-      term.writeln('\x1b[1;33m📌 Mission 4: Try "which steam", "flatpak list", "lutris"\x1b[0m');
-      term.write('\x1b[1;33m$\x1b[0m ');
-    } else if (!completedMissions.includes(3)) {
-      addMessage('bazzi', 'Fast geschafft! Aber erst Mission 3.');
-    }
-  });
-});
+    window.playVideo(video
