@@ -88,6 +88,59 @@
       </div>
     </div>
 
+    <!-- NEU: Bazzite Desktop Simulation -->
+    <div class="desktop-simulation">
+      <div class="desktop-header">
+        <span>🖥️</span>
+        <h3>Bazzite Desktop</h3>
+        <span class="simulation-badge">Simulation</span>
+      </div>
+      
+      <!-- Desktop Icons -->
+      <div class="desktop-icons">
+        <div class="desktop-icon" onclick="openDesktopApp('steam')">
+          <div class="icon">🎮</div>
+          <div>Steam</div>
+        </div>
+        <div class="desktop-icon" onclick="openDesktopApp('discord')">
+          <div class="icon">💬</div>
+          <div>Discord</div>
+        </div>
+        <div class="desktop-icon" onclick="openDesktopApp('files')">
+          <div class="icon">📁</div>
+          <div>Dateien</div>
+        </div>
+        <div class="desktop-icon" onclick="openDesktopApp('terminal')">
+          <div class="icon">🖥️</div>
+          <div>Terminal</div>
+        </div>
+        <div class="desktop-icon" onclick="openDesktopApp('store')">
+          <div class="icon">📦</div>
+          <div>App Store</div>
+        </div>
+        <div class="desktop-icon" onclick="openDesktopApp('settings')">
+          <div class="icon">⚙️</div>
+          <div>Einstellungen</div>
+        </div>
+      </div>
+      
+      <!-- Aktives Fenster -->
+      <div class="desktop-window" id="desktop-window">
+        <div class="window-header">
+          <span>🔲</span>
+          <span>Fenster</span>
+          <span>✖️</span>
+        </div>
+        <div class="window-content" id="window-content">
+          Klick ein Icon, um das Fenster zu öffnen.
+        </div>
+      </div>
+      
+      <div class="desktop-footer">
+        ⏳ Simulation – aber so sieht echtes Bazzite aus!
+      </div>
+    </div>
+
     <!-- Terminal Container -->
     <div class="terminal-container">
       <div class="terminal-header">
@@ -106,7 +159,7 @@
       <button class="campfire-button danger" id="emergencyReset">🚨 Reset All</button>
     </div>
 
-    <!-- Campfire Cinema (EINMAL) -->
+    <!-- Campfire Cinema -->
     <div class="cinema-section">
       <div class="cinema-header">
         <span style="font-size: 32px;">🎬</span>
@@ -158,7 +211,7 @@
         </div>
       </div>
       
-      <!-- Playlist Buttons (EINMAL) -->
+      <!-- Playlist Buttons -->
       <div style="display: flex; gap: 12px; justify-content: center; margin-top: 20px;">
         <button class="campfire-button" onclick="playPlaylist('mission1')">▶️ Mission 1 Playlist</button>
         <button class="campfire-button" onclick="playPlaylist('mission2')">▶️ Mission 2 Playlist</button>
@@ -193,53 +246,13 @@
     </div>
   </div>
 
-  <!-- Bazzite Desktop Demo -->
-<div class="bazzite-demo-section">
-  <div class="section-header">
-    <span>🖥️</span>
-    <h3>Bazzite Desktop (Demo)</h3>
-    <span class="demo-badge">✨ Simulation</span>
-  </div>
-  
-  <div class="desktop-icons">
-    <div class="desktop-icon" onclick="bazziExplain('steam')">
-      <div class="icon">🎮</div>
-      <div>Steam</div>
-    </div>
-    <div class="desktop-icon" onclick="bazziExplain('discord')">
-      <div class="icon">💬</div>
-      <div>Discord</div>
-    </div>
-    <div class="desktop-icon" onclick="bazziExplain('files')">
-      <div class="icon">📁</div>
-      <div>Dateien</div>
-    </div>
-    <div class="desktop-icon" onclick="bazziExplain('terminal')">
-      <div class="icon">🖥️</div>
-      <div>Terminal</div>
-    </div>
-    <div class="desktop-icon" onclick="bazziExplain('store')">
-      <div class="icon">📦</div>
-      <div>App Store</div>
-    </div>
-    <div class="desktop-icon" onclick="bazziExplain('settings')">
-      <div class="icon">⚙️</div>
-      <div>Einstellungen</div>
-    </div>
-  </div>
-  
-  <div class="demo-footer">
-    ⏳ Demo-Modus: Alles was du siehst, gibt's auf echtem Bazzite!
-  </div>
-  
   <!-- Info Modals -->
   <div class="modal" id="modalAbout"><div class="modal-content"><h2>About</h2><p>Bazzite Campfire is a safe place to learn Linux.</p><button class="campfire-button" onclick="closeModal()">Close</button></div></div>
   <div class="modal" id="modalPrivacy"><div class="modal-content"><h2>Privacy</h2><p>No data collection. Everything stays in your browser.</p><button class="campfire-button" onclick="closeModal()">Close</button></div></div>
   <div class="modal" id="modalContact"><div class="modal-content"><h2>Contact</h2><p>Open an issue on GitHub.</p><button class="campfire-button" onclick="closeModal()">Close</button></div></div>
-  
-  
+
+  <!-- Scripts -->
   <script src="bazzite-desktop.js"></script>
-  
   <script src="bazzi-personality.js"></script>
   <script src="script.js"></script>
   <script type="module" src="three-setup.js"></script>
