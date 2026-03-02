@@ -1,0 +1,97 @@
+name: "Bazzi Auto-Split"
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "index.html"
+
+jobs:
+  split-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      - name: "Extract CSS"
+        run: |
+          if grep -q "<style>" index.html; then
+            sed -n '/<style>/,/<\/style>/p' index.html | sed '1d;$d' > style.css
+          else
+            echo "/* No CSS found */" > style.css
+          fi
+
+      - name: "Extract JavaScript"
+        run: |
+          if grep -q "<script>" index.html; then
+            awk '/<script>/,/<\/script>/' index.html | grep -v "three" | sed '1d;$d' > script.js
+          else
+            echo "// No JavaScript found" > script.js
+          fi
+
+      - name: "Extract Three.js"
+        run: |
+          if grep -q '<script type="module">' index.html; then
+            awk '/<script type="module">/,/<\/script>/' index.html | sed '1d;$d' > three-setup.js
+          else
+            echo "// No Three.js found" > three-setup.js
+          fi
+
+      - name: "Create personality file"
+        run: |
+          echo "// Bazzi's personality will be added manually" > bazzi-personality.js
+
+      - name: "Create translations folder"
+        run: |
+          mkdir -p translations
+          echo "{}" > translations/en.json
+          echo "{}" > translations/de.json
+
+      - name: "Create new index.html"
+        run: |
+          echo '<!DOCTYPE html>' > index.html
+          echo '<html lang="en">' >> index.html
+          echo '<head>' >> index.html
+          echo '  <meta charset="UTF-8">' >> index.html
+          echo '  <meta name="viewport" content="width=device-width, initial-scale=1.0">' >> index.html
+          echo '  <title>Bazzite Campfire</title>' >> index.html
+          echo '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />' >> index.html
+          echo '  <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>' >> index.html
+          echo '  <script type="importmap">' >> index.html
+          echo '    {' >> index.html
+          echo '      "imports": {' >> index.html
+          echo '        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"' >> index.html
+          echo '      }' >> index.html
+          echo '    }' >> index.html
+          echo '  </script>' >> index.html
+          echo '  <link rel="stylesheet" href="style.css">' >> index.html
+          echo '</head>' >> index.html
+          echo '<body>' >> index.html
+          echo '  <div id="three-canvas"></div>' >> index.html
+          echo '  <div class="campfire-container" id="app"></div>' >> index.html
+          echo '  <script src="bazzi-personality.js"></script>' >> index.html
+          echo '  <script src="script.js"></script>' >> index.html
+          echo '  <script type="module" src="three-setup.js"></script>' >> index.html
+          echo '</body>' >> index.html
+          echo '</html>' >> index.html
+
+      - name: "Check for changes"
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: "Auto commit"
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Auto-split files"
+          commit_user_name: "Bazzi Bot"
+          commit_user_email: "bazzi@bazzite-campfire.bot"
+          file_pattern: "*.css *.js translations/*.json index.html"
