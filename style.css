@@ -374,11 +374,32 @@ h1 {
 .terminal-dot.green { background: #27C93F; }
 
 #terminal {
-  height: 250px;
+  height: 300px;  /* Feste Höhe */
   width: 100%;
   background: transparent;
   font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
+  overflow-y: auto;  /* WICHTIG: Scrollbar aktivieren */
+}
+
+/* Optional: Scrollbar stylen */
+#terminal .xterm-viewport {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #FF9341 #2A3A2A;
+}
+
+#terminal .xterm-viewport::-webkit-scrollbar {
+  width: 8px;
+}
+
+#terminal .xterm-viewport::-webkit-scrollbar-track {
+  background: #2A3A2A;
+}
+
+#terminal .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #FF9341;
+  border-radius: 4px;
 }
 
 .control-bar {
