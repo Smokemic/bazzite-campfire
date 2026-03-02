@@ -118,36 +118,42 @@ function quickQuestion(question) {
 
 // ==================== MODAL FUNKTIONEN ====================
 
-function showModal(type) {
+window.showModal = function(type) {
   const modal = document.getElementById(`modal${type.charAt(0).toUpperCase() + type.slice(1)}`);
   if (modal) modal.classList.add('active');
-}
+};
 
-function closeModal() {
+window.closeModal = function() {
   document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
-}
+};
 
 // ==================== VIDEO FUNKTIONEN ====================
 
 let currentPlaylist = [];
 let currentVideoIndex = 0;
 
-function playVideo(videoId, title) {
+window.playVideo = function(videoId, title) {
+  console.log('Playing video:', videoId, title);
   const player = document.getElementById('youtubePlayer');
-  if (player) {
+  const modal = document.getElementById('videoModal');
+  
+  if (player && modal) {
     player.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
-    document.getElementById('videoModal').classList.add('active');
+    modal.classList.add('active');
     addMessage('bazzi', `🎬 Now playing: ${title}. Watch and learn!`);
+  } else {
+    console.error('Player or modal not found');
   }
-}
+};
 
-function closeVideoModal() {
+window.closeVideoModal = function() {
   const player = document.getElementById('youtubePlayer');
+  const modal = document.getElementById('videoModal');
   if (player) player.src = '';
-  document.getElementById('videoModal').classList.remove('active');
-}
+  if (modal) modal.classList.remove('active');
+};
 
-function playPlaylist(type) {
+window.playPlaylist = function(type) {
   if (type === 'mission1') {
     currentPlaylist = ['d6rMOZwB9QI', 'fVnR5RQMNkM', 'j6vKLJxAKfw'];
   } else if (type === 'mission2') {
@@ -170,11 +176,11 @@ function playPlaylist(type) {
       'VGgTmxXp7xQ': 'grep – Search like a pro',
       'OVLuT1nWf5g': 'Bazzite overview'
     };
-    playVideo(videoId, titles[videoId]);
+    window.playVideo(videoId, titles[videoId]);
   }
-}
+};
 
-function playNextVideo() {
+window.playNextVideo = function() {
   if (currentPlaylist.length > 0 && currentVideoIndex < currentPlaylist.length - 1) {
     currentVideoIndex++;
     const videoId = currentPlaylist[currentVideoIndex];
@@ -189,16 +195,15 @@ function playNextVideo() {
       'VGgTmxXp7xQ': 'grep – Search like a pro',
       'OVLuT1nWf5g': 'Bazzite overview'
     };
-    playVideo(videoId, titles[videoId]);
+    window.playVideo(videoId, titles[videoId]);
   } else {
     addMessage('bazzi', "That's the end of the playlist! Want to watch again?");
-    closeVideoModal();
+    window.closeVideoModal();
   }
-}
+};
 
 // ==================== BUTTON HANDLER ====================
 
-// Warte bis DOM geladen ist für Button-Handler
 document.addEventListener('DOMContentLoaded', () => {
   
   document.getElementById('resetSession')?.addEventListener('click', () => {
