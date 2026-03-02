@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bazzite Campfire 🔥 Dein Linux-Lagerfeuer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #0B1E10 0%, #1A3A20 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #F5F0E6;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    .campfire-container {
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    /* Welcome Card */
+    .welcome-card {
+      background: rgba(30, 45, 35, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 48px;
+      padding: 60px 40px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 147, 65, 0.2);
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 147, 65, 0.1) inset;
+      text-align: center;
+    }
+
+    .fire-emoji {
+      font-size: 120px;
+      line-height: 1;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 30px #FF9341);
+      animation: flicker 4s infinite ease-in-out;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 30px #FF9341); }
+      25% { transform: scale(1.02); opacity: 0.95; filter: drop-shadow(0 0 40px #FFB47B, 0 0 20px #FF9341); }
+      50% { transform: scale(0.98); opacity: 1; filter: drop-shadow(0 0 35px #FF9341); }
+      75% { transform: scale(1.01); opacity: 0.98; filter: drop-shadow(0 0 45px #FFB47B); }
+      100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 30px #FF9341); }
+    }
+
+    h1 {
+      font-size: 64px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #FFE9C4 0%, #FFD8A8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 22px;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      color: #CBBDA8;
+      font-weight: 300;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #FF9341;
+      color: #0B1E10;
+      text-decoration: none;
+      font-size: 24px;
+      font-weight: 600;
+      padding: 20px 60px;
+      border-radius: 60px;
+      transition: all 0.2s ease;
+      box-shadow: 0 10px 30px -5px #FF9341;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .cta-button:hover {
+      background: #FFA75E;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px -3px #FF9341;
+    }
+
+    .note {
+      font-size: 16px;
+      color: #9BAF9A;
+      font-style: italic;
+    }
+
+    /* Feature Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .feature-card {
+      background: rgba(25, 40, 30, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 32px;
+      padding: 32px 24px;
+      border: 1px solid rgba(255, 147, 65, 0.15);
+      transition: transform 0.2s ease;
+      text-align: center;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 147, 65, 0.4);
+      background: rgba(30, 50, 35, 0.7);
+    }
+
+    .feature-emoji {
+      font-size: 56px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+    }
+
+    .feature-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #FFD8A8;
+      margin-bottom: 12px;
+    }
+
+    .feature-desc {
+      font-size: 16px;
+      color: #CBBDA8;
+      line-height: 1.6;
+    }
+
+    /* Terminal Preview */
+    .terminal-preview {
+      background: #0A1A0E;
+      border-radius: 24px;
+      padding: 24px;
+      margin-top: 30px;
+      border: 1px solid #3A5A3A;
+      box-shadow: 0 20px 40px -15px black;
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .terminal-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #FF5F56; }
+    .terminal-dot.yellow { background: #FFBD2E; }
+    .terminal-dot.green { background: #27C93F; }
+
+    .terminal-line {
+      font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+      color: #9FE59F;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .terminal-line span.prompt {
+      color: #FF9341;
+      margin-right: 12px;
+    }
+
+    .terminal-line span.output {
+      color: #D4D4D4;
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: #FF9341;
+      vertical-align: middle;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .welcome-card { padding: 40px 20px; }
+      h1 { font-size: 48px; }
+      .subtitle { font-size: 18px; }
+      .cta-button { font-size: 20px; padding: 16px 40px; }
+      .feature-card { padding: 24px 16px; }
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      color: #5A7A5A;
+      font-size: 14px;
+      border-top: 1px solid #2A4A2A;
+      padding-top: 30px;
+    }
+
+    .footer a {
+      color: #FFB47B;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Badge */
+    .no-shekelslave {
+      display: inline-block;
+      background: #2A4A2A;
+      color: #FFD8A8;
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 14px;
+      margin-top: 20px;
+      border: 1px solid #FF9341;
+    }
+  </style>
+</head>
+<body>
+  <div class="campfire-container">
+    <!-- Haupt-Card -->
+    <div class="welcome-card">
+      <div class="fire-emoji">🔥</div>
+      <h1>Bazzite Campfire</h1>
+      <div class="subtitle">
+        Dein Lagerfeuer für den Umstieg von Windows zu Linux.<br>
+        Warm. Sicher. Ohne Kreditkarte.
+      </div>
+      
+      <button class="cta-button" onclick="alert('Los geht’s! Bald kannst du hier dein Terminal öffnen. 🔥')">
+        🔥 Platz nehmen
+      </button>
+      
+      <div class="note">
+        Keine Anmeldung. Keine Karte. Nur du und das Feuer.
+      </div>
+      
+      <div class="no-shekelslave">
+        ⛔ kein Shekelslave-Verhalten – versprochen!
+      </div>
+    </div>
+
+    <!-- Feature-Grid -->
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-emoji">🏕️</div>
+        <div class="feature-title">Dein Zelt</div>
+        <div class="feature-desc">Dein Fortschritt bleibt bei dir. Lokal. Sicher. Immer.</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-emoji">🔥</div>
+        <div class="feature-title">Lagerfeuer-Chat</div>
+        <div class="feature-desc">Bald: Hier treffen sich alle Camper. Zum Quatschen, Fragen, Helfen.</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-emoji">🥾</div>
+        <div class="feature-title">Wanderwege</div>
+        <div class="feature-desc">Lernpfade für jeden: Vom ersten Befehl bis zum Bazzite-Profi.</div>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-emoji">🎒</div>
+        <div class="feature-title">Rucksack</div>
+        <div class="feature-desc">Deine Befehle, deine Notizen, deine Fundstücke – immer dabei.</div>
+      </div>
+    </div>
+
+    <!-- Terminal-Vorschau -->
+    <div class="terminal-preview">
+      <div class="terminal-header">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+      </div>
+      
+      <div class="terminal-line">
+        <span class="prompt">➜</span> Willkommen im Campfire-Terminal
+      </div>
+      <div class="terminal-line">
+        <span class="prompt">➜</span> Hier kannst du bald Linux-Befehle lernen – ganz ohne Risiko.
+      </div>
+      <div class="terminal-line">
+        <span class="prompt">➜</span> Probier mal:
+      </div>
+      <div class="terminal-line">
+        <span class="prompt">$</span> echo "Hallo Bazzite" <span class="output"># Keine Angst, das ist nur eine Vorschau</span>
+      </div>
+      <div class="terminal-line">
+        <span class="prompt">⏎</span> <span class="output">Hallo Bazzite</span>
+      </div>
+      <div class="terminal-line">
+        <span class="prompt">➜</span> <span class="terminal-cursor"></span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>🔥 Bazzite Campfire – Von einem Noob, für alle Noobs. Mit 💚 und DeepSeek gebaut.</p>
+      <p>Keine Kreditkarte. Kein Bullshit. Nur Hilfe.</p>
+      <p><a href="https://github.com/Smokemic" target="_blank">GitHub</a> • <a href="#">Über das Campfire</a> • <a href="#">Impressum</a></p>
+      <p style="margin-top: 20px; font-size: 12px;">Anti-Shekelslave-Einheit 🌟</p>
+    </div>
+  </div>
+
+  <script>
+    // Kleiner Easter Egg: Shekelslave-Counter
+    console.log("🔥 Bazzite Campfire – 0 Shekelslaves harmed in the making of this website.");
+    
+    // Feuer-Animation bei Klick
+    document.querySelector('.fire-emoji').addEventListener('click', function() {
+      this.style.animation = 'none';
+      this.offsetHeight; // reflow
+      this.style.animation = 'flicker 4s infinite ease-in-out';
+      
+      // Kleine Überraschung
+      alert('🔥 Du hast das Feuer angefacht! Bald brennt es hier richtig.');
+    });
+  </script>
+</body>
+</html>
